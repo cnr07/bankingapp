@@ -1,7 +1,6 @@
 package com.cnr.bankingapp.entity;
 
-
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -13,19 +12,21 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name="user", schema="banking-app")
+@Table(name="account", schema="banking-app")
 @Data
-public class User {
+public class Account {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.UUID) 
     private UUID id;
-	private String username;
-	private String password;
-	private String email;
+	private String number;
+	private String name;
+	private BigDecimal balance;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
+	
+	
 	
 	
 	
