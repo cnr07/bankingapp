@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,28 +37,28 @@ public class AccountController {
 	}
 	
 	@PostMapping("/create")
-    public ResponseEntity<Account> createAccount(@RequestBody AccountDto request) {
-		return ResponseEntity.ok(accountService.createAccount(request));
+    public ResponseEntity<Account> createAccount(@RequestBody AccountDto request,@RequestHeader(name = "Authorization", required = true) String jwt) {
+		return ResponseEntity.ok(accountService.createAccount(request,jwt));
     }
 	
 	@PostMapping
-    public ResponseEntity<List<Account>> searchAccounts(@RequestBody SearchAccountDto request) {
-		return ResponseEntity.ok(accountService.searchAccounts(request));
+    public ResponseEntity<List<Account>> searchAccounts(@RequestBody SearchAccountDto request,@RequestHeader(name = "Authorization", required = true) String jwt) {
+		return ResponseEntity.ok(accountService.searchAccounts(request,jwt));
     }
 	
 	@PutMapping
-    public ResponseEntity<Account> updateAccount(@RequestBody UpdateAccountDto request) {
-		return ResponseEntity.ok(accountService.updateAccount(request));
+    public ResponseEntity<Account> updateAccount(@RequestBody UpdateAccountDto request,@RequestHeader(name = "Authorization", required = true) String jwt) {
+		return ResponseEntity.ok(accountService.updateAccount(request,jwt));
     }
 	
 	@DeleteMapping("/{id}")
-    public ResponseEntity deleteAccount(@PathVariable UUID id) {
-		return ResponseEntity.ok(accountService.deleteAccount(id));
+    public ResponseEntity deleteAccount(@PathVariable UUID id,@RequestHeader(name = "Authorization", required = true) String jwt) {
+		return ResponseEntity.ok(accountService.deleteAccount(id,jwt));
     }
 	
 	@GetMapping("/{id}")
-    public ResponseEntity<Account> detailsAccount(@PathVariable UUID id) {
-		return ResponseEntity.ok(accountService.detailsAccount(id));
+    public ResponseEntity<Account> detailsAccount(@PathVariable UUID id,@RequestHeader(name = "Authorization", required = true) String jwt) {
+		return ResponseEntity.ok(accountService.detailsAccount(id,jwt));
     }
 	
 	@ExceptionHandler(BankingException.class)

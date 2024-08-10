@@ -20,6 +20,7 @@ import com.cnr.bankingapp.entity.User;
 import com.cnr.bankingapp.exception.BankingException;
 import com.cnr.bankingapp.repository.AccountRepository;
 import com.cnr.bankingapp.repository.UserRepository;
+import com.cnr.bankingapp.security.JwtService;
 import com.cnr.bankingapp.service.AccountService;
 
 import jakarta.transaction.Transactional;
@@ -30,18 +31,24 @@ public class AccountServiceImpl implements AccountService{
 	
 	private AccountRepository accountRepository;
 	private UserRepository userRepository;
+	private JwtService jwtService;
 	
 	//Constructor dependency injection
 	@Autowired
-	AccountServiceImpl(AccountRepository accountRepository,UserRepository userRepository){
+	AccountServiceImpl(AccountRepository accountRepository,UserRepository userRepository,JwtService jwtService){
 		this.accountRepository = accountRepository;
 		this.userRepository = userRepository;
+		this.jwtService = jwtService;
 	}
 
 	@Override
-	public Account createAccount(AccountDto account) {
+	public Account createAccount(AccountDto account,String jwtt) {
 		
 		try {
+			String jwt = jwtt.substring(7);
+			if(!jwtService.extractUsername(jwt).equals(account.getUsername())) {
+				throw new BankingException("User does not have auth account!");
+			}
 			User user = userRepository.findByUsername(account.getUsername()).get();
 			Optional<List<Account>> accountList = accountRepository.findAllByUser(user);
 			if(accountList.isPresent()) {
@@ -73,8 +80,12 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public List<Account> searchAccounts(SearchAccountDto searchAccount) {
+	public List<Account> searchAccounts(SearchAccountDto searchAccount,String jwtt) {
 		try {
+			String jwt = jwtt.substring(7);
+			if(!jwtService.extractUsername(jwt).equals(searchAccount.getUsername())) {
+				throw new BankingException("User does not have auth account!");
+			}
 			User user = userRepository.findByUsername(searchAccount.getUsername()).get();
 			Optional<List<Account>> accounts = accountRepository.findAllByUser(user);
 			List<Account> response = new ArrayList<Account>();
@@ -100,8 +111,12 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public Account updateAccount(UpdateAccountDto updateAccount) {
+	public Account updateAccount(UpdateAccountDto updateAccount,String jwtt) {
 		try {
+			String jwt = jwtt.substring(7);
+			if(!jwtService.extractUsername(jwt).equals(updateAccount.getUsername())) {
+				throw new BankingException("User does not have auth account!");
+			}
 			User user = userRepository.findByUsername(updateAccount.getUsername()).get();
 			Optional<Account> accountToUpdate = accountRepository.findByNumber(updateAccount.getNumber());
 			if(!accountToUpdate.isPresent()) {throw new BankingException("Account does not found!");}
@@ -109,6 +124,7 @@ public class AccountServiceImpl implements AccountService{
 			BigDecimal updateBalance = updateAccount.getBalance();
 			accountBalance=accountBalance.add(updateBalance);
 			accountToUpdate.get().setBalance(accountBalance);
+			accountToUpdate.get().setUpdatedAt(LocalDateTime.now());
 			accountRepository.save(accountToUpdate.get());
 			return accountToUpdate.get();
 		}catch(Exception e) {
@@ -118,10 +134,14 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public int deleteAccount(UUID id) {
+	public int deleteAccount(UUID id,String jwtt) {
 		try {
+			String jwt = jwtt.substring(7);
 			Optional<Account> accountToDel = accountRepository.findById(id);
 			if(!accountToDel.isPresent()) {throw new BankingException("Account does not found!");}
+			if(!jwtService.extractUsername(jwt).equals(accountToDel.get().getUser().getUsername())) {
+				throw new BankingException("User does not have auth account!");
+			}
 			accountRepository.delete(accountToDel.get());
 			return 0;
 		}catch(Exception e) {
@@ -131,10 +151,14 @@ public class AccountServiceImpl implements AccountService{
 	}
 
 	@Override
-	public Account detailsAccount(UUID id) {
+	public Account detailsAccount(UUID id,String jwtt) {
 		try {
+			String jwt = jwtt.substring(7);
 			Optional<Account> account = accountRepository.findById(id);
 			if(!account.isPresent()) {throw new BankingException("Account does not found!");}
+			if(!jwtService.extractUsername(jwt).equals(account.get().getUser().getUsername())) {
+				throw new BankingException("User does not have auth account!");
+			}
 			return account.get();
 		}catch(Exception e) {
 			throw new BankingException("Error on getting details account!");

@@ -10,14 +10,14 @@ import com.cnr.bankingapp.entity.Account;
 
 public interface AccountService {
 	
-	Account createAccount(AccountDto account);
+	Account createAccount(AccountDto account,String jwt);
 	
-	List<Account> searchAccounts(SearchAccountDto searchAccount);
+	List<Account> searchAccounts(SearchAccountDto searchAccount,String jwt);
 	
-	Account updateAccount(UpdateAccountDto updateAccount);
+	Account updateAccount(UpdateAccountDto updateAccount,String jwt);
 	
-	int deleteAccount (UUID id);
+	int deleteAccount (UUID id,String jwt);
 	
-	Account detailsAccount (UUID id);
+	Account detailsAccount (UUID id,String jwt);
 
 }
