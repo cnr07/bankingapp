@@ -12,6 +12,12 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.cnr.bankingapp.dto.RefreshTokenRequestDTO;
+import com.cnr.bankingapp.entity.Token;
+import com.cnr.bankingapp.repository.TokenRepository;
+
+import io.jsonwebtoken.ExpiredJwtException;
+
 import java.io.IOException;
 
 @Component
@@ -19,11 +25,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	
 	private final JwtService jwtService;
     private final UserDetailsServiceImp userDetailsService;
+    private final TokenRepository tokenRepository;
 
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsServiceImp userDetailsService) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsServiceImp userDetailsService,TokenRepository tokenRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -32,8 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
              @NonNull HttpServletResponse response,
              @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-
-        String authHeader = request.getHeader("Authorization");
+    	
+    	String authHeader = request.getHeader("Authorization");
 
         if(authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request,response);
@@ -41,7 +49,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        String username = jwtService.extractUsername(token);
+        Token tok = tokenRepository.findByAccessToken(token).get();
+        String username = tok.getUser().getUsername();
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -61,6 +70,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+
+        
 
 
     }

@@ -42,9 +42,9 @@ public class User implements UserDetails {
 	
 	private String email;
 	
-	//private LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 	
-	//private LocalDateTime updatedAt;
+	private LocalDateTime updatedAt;
 	
 	@Enumerated(value = EnumType.STRING)
     private RoleType role;

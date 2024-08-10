@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 
 import com.cnr.bankingapp.dto.AuthRequestDTO;
 import com.cnr.bankingapp.dto.AuthResponseDto;
+import com.cnr.bankingapp.dto.RefreshTokenRequestDTO;
 import com.cnr.bankingapp.dto.UserDto;
 import com.cnr.bankingapp.entity.User;
 import com.cnr.bankingapp.security.AuthenticationService;
@@ -51,8 +52,8 @@ public class UserController {
     }
 
     @PostMapping("/refresh_token")
-    public ResponseEntity refreshToken(HttpServletRequest request,HttpServletResponse response) {
-        return authService.refreshToken(request, response);
+    public ResponseEntity refreshToken(@RequestBody RefreshTokenRequestDTO request) {
+        return authService.refreshToken(request);
     }
 	
 	

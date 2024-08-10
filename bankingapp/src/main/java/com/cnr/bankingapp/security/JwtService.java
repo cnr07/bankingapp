@@ -1,14 +1,19 @@
 package com.cnr.bankingapp.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.cnr.bankingapp.entity.Token;
 import com.cnr.bankingapp.entity.User;
 import com.cnr.bankingapp.repository.TokenRepository;
 
@@ -16,6 +21,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -43,28 +49,53 @@ public class JwtService {
 
 
     public boolean isValid(String token, UserDetails user) {
-        String username = extractUsername(token);
+    	try {
+    		String username = extractUsername(token);
 
-        boolean validToken = tokenRepository
-                .findByAccessToken(token)
-                .map(t -> !t.isLoggedOut())
-                .orElse(false);
+            boolean validToken = tokenRepository
+                    .findByAccessToken(token)
+                    .map(t -> !t.isLoggedOut())
+                    .orElse(false);
+            
+
+            return (username.equals(user.getUsername())) && !isTokenExpired(token) && validToken;
+    	}catch (SignatureException e) {
+            return false;
+        } catch (MalformedJwtException e) {
+            return false;
+        } catch (ExpiredJwtException e) {
+            return false;
+        } catch (UnsupportedJwtException e) {
+            return false;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
         
-        boolean isVal = (username.equals(user.getUsername())) && !isTokenExpired(token) && validToken;
-        System.out.println("ISVAL:"+isVal);
-
-        return (username.equals(user.getUsername())) && !isTokenExpired(token) && validToken;
     }
 
     public boolean isValidRefreshToken(String token, User user) {
-        String username = extractUsername(token);
+    	
+    	try {
+    		String username = extractUsername(token);
 
-        boolean validRefreshToken = tokenRepository
-                .findByRefreshToken(token)
-                .map(t -> !t.isLoggedOut())
-                .orElse(false);
+            boolean validRefreshToken = tokenRepository
+                    .findByRefreshToken(token)
+                    .map(t -> !t.isLoggedOut())
+                    .orElse(false);
 
-        return (username.equals(user.getUsername())) && !isTokenExpired(token) && validRefreshToken;
+            return (username.equals(user.getUsername())) && !isTokenExpired(token) && validRefreshToken;
+    	}catch (SignatureException e) {
+            return false;
+        } catch (MalformedJwtException e) {
+            return false;
+        } catch (ExpiredJwtException e) {
+            return false;
+        } catch (UnsupportedJwtException e) {
+            return false;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        
     }
 
     private boolean isTokenExpired(String token) {
@@ -81,12 +112,14 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
+    	return Jwts
                 .parserBuilder()
                 .setSigningKey(getSigninKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    	
+        
     }
 
 
