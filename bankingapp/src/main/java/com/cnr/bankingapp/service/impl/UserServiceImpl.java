@@ -8,7 +8,10 @@ import com.cnr.bankingapp.entity.User;
 import com.cnr.bankingapp.repository.UserRepository;
 import com.cnr.bankingapp.service.UserService;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class UserServiceImpl implements UserService{
 	
 	private UserRepository userRepository;
