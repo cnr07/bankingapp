@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cnr.bankingapp.dto.AuthResponseDto;
-import com.cnr.bankingapp.dto.RefreshTokenRequestDTO;
+import com.cnr.bankingapp.dto.RefreshTokenRequestDto;
 import com.cnr.bankingapp.entity.Token;
 import com.cnr.bankingapp.entity.User;
 import com.cnr.bankingapp.repository.TokenRepository;
@@ -111,7 +111,7 @@ public class AuthenticationService {
     }
 
     public ResponseEntity refreshToken(
-    		RefreshTokenRequestDTO request) {
+    		RefreshTokenRequestDto request) {
         // extract the token from authorization header
         String authHeader = request.getAuthHeader();
         

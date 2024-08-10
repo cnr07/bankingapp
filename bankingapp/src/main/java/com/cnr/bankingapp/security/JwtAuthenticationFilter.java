@@ -12,11 +12,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.cnr.bankingapp.dto.RefreshTokenRequestDTO;
 import com.cnr.bankingapp.entity.Token;
 import com.cnr.bankingapp.repository.TokenRepository;
-
-import io.jsonwebtoken.ExpiredJwtException;
 
 import java.io.IOException;
 

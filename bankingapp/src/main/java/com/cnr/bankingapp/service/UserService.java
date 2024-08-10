@@ -5,8 +5,5 @@ import com.cnr.bankingapp.entity.User;
 
 public interface UserService {
 	
-	User saveUser(UserDto user);
-	
-	User getUserByUsername(String username);
 
 }

@@ -19,21 +19,9 @@ public class UserServiceImpl implements UserService{
 		this.userRepository = userRepository;
 	}
 
-	@Override
-	public User saveUser(UserDto user) {
-		User userToSave = new User();
-		userToSave.setUsername(user.getUsername());
-		//userToSave.setPassword(passwordEncoder.encode(user.getPassword()));
-		userToSave.setEmail(user.getEmail());
-		User savedUser = userRepository.save(userToSave);
-		return savedUser;
-	}
+	
 
-	@Override
-	public User getUserByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	
 	
