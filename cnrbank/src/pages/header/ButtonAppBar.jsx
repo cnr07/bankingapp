@@ -6,7 +6,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 
+import { useContext } from 'react';
+import { BankContext } from '../.././context/BankContext';
+
 export default function ButtonAppBar() {
+  const {  accessTok ,refreshTok,username,logged} = useContext(BankContext);
   return (
     <Box marginBottom={7} sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -23,7 +27,7 @@ export default function ButtonAppBar() {
           <Typography display={'flex'} marginRight={100} variant="h6" component="div" sx={{ flexGrow: 1 }}>
             CNRBANK
           </Typography>
-          <Button color="inherit">Logout</Button>
+          {logged.current==="yes"&&<Button color="inherit">Logout</Button>}
         </Toolbar>
       </AppBar>
     </Box>

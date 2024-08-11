@@ -15,16 +15,14 @@ import {
    import { BankContext } from '../.././context/BankContext';
    import { useNavigate } from 'react-router-dom';
 
-
-function Login() {
-
+   function Register(){
     const {  accessTok ,refreshTok,username,logged} = useContext(BankContext);
     const navigate = useNavigate();
 
-
     const [formValues, setFormValues] = useState({
-        username: username.current,
+        username: '',
         password: '',
+        email: '',
        });
        const getData = (e) => {
         const { value, name } = e.target;
@@ -36,17 +34,18 @@ function Login() {
         });
        };
 
-       
 
        const handleSubmit = async () => {
         
-        var res = fetch('http://localhost:9898/api/users/login', {
+        var res = fetch('http://localhost:9898/api/users/register', {
             method: 'POST',
             headers:{'Content-Type': 'application/json'},
             body: JSON.stringify(
                 {
                     "username" : formValues.username,
-                    "password" : formValues.password
+                    "password" : formValues.password,
+                    "email" : formValues.email,
+                    "role" : "USER"
                 }
             )
         })
@@ -58,10 +57,7 @@ function Login() {
                 if (!response.ok) {
                     // get error message from body or default to response status
                     const error = (data && data.message) || response.status;
-                    console.log(response.status)
-                    console.log(accessTok.current)
-                    console.log(refreshTok.current)
-                    console.log(username.current)
+
                     return Promise.reject(error);
                 }
                 accessTok.current=data.access_token
@@ -82,9 +78,8 @@ function Login() {
             });
       };
 
-     
 
-    return(
+return(
         <>
    <Container component="main" maxWidth="xs">
     <Box>
@@ -96,7 +91,6 @@ function Login() {
         margin="normal"
         required
         fullWidth
-        defaultValue={username.current}
         id="username"
         type="text"
         label="Username"
@@ -115,7 +109,19 @@ function Login() {
         id="password"
         autoComplete="current-password"
         onChange={getData}
-       />                        
+       />   
+       <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="email"
+        type="email"
+        label="Email"
+        name="email"
+        autoComplete="email"
+        autoFocus
+        onChange={getData}
+       />                     
       <FormControlLabel
        control={<Checkbox defaultChecked  value="remember" color="primary" />}
        label="Remember me"
@@ -125,22 +131,17 @@ function Login() {
        variant="contained"
        sx={{ mt: 3, mb: 2 }}
        onClick={handleSubmit}>
-       Sign In
-      </Button>
-      <Grid>
-       <Link href="">Forgot password?</Link>
-      </Grid>     
-      <Grid className="footer">
-       <Typography component="h5">
-        Don't have an account? <Link href="/cnrbank/register">Sign Up</Link>
-       </Typography>
-      </Grid>
+       Sign Up
+      </Button>  
      </Box>
     </Box>
    </Container>
   </>
         
     );
-    
-}
-export default Login;
+
+
+
+
+   }
+   export default Register;

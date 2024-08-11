@@ -7,6 +7,8 @@ import ButtonAppBar from "./pages/header/ButtonAppBar"
 import { useParams } from "react-router-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BankProvider } from './context/BankContext';
+import Dashboard from './pages/dashboard/Dashboard';
+import Register from './pages/auth/Register';
 
 function App() {
   const {id} = useParams()
@@ -16,6 +18,8 @@ function App() {
           <ButtonAppBar></ButtonAppBar>
           <Routes>
             <Route path='/' element={<Login></Login>} />
+            <Route path='/register' element={<Register></Register>} />
+            <Route path='/dashboard' element={<Dashboard></Dashboard>} />
             <Route path="customer">
               <Route path=":id" element={<Login/>}/>
               </Route>
