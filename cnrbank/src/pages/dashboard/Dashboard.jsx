@@ -26,7 +26,8 @@ function Dashboard(){
     const {  accessTok ,refreshTok,username,logged,accounts} = useContext(BankContext);
     const navigate = useNavigate();
     const accountsKeys = useRef([]);
-    const tableData = useRef([]);
+    const accountColumns = useRef([]);
+    const [spinner, setSpinner] = useState(false);  
 
     
     const fetchAccounts = async () => {
@@ -50,10 +51,16 @@ function Dashboard(){
             }
             accounts.current=data
             accountsKeys.current=Object.keys(data[0]);
-            
-            
-            console.log(accountsKeys.current)
-            console.log(accounts.current)
+            var dataColumns = []
+            for(var itr=0;itr<accountsKeys.current.length;itr++){
+                var field = accountsKeys.current[itr]
+                dataColumns = [...dataColumns,{field}]
+            }
+            accountColumns.current=dataColumns
+            setSpinner(true)
+            //console.log(dataColumns)
+            //console.log(accountsKeys.current)
+            //console.log(accounts.current)
         })
         .catch(error => {
             console.error('There was an error!', error);
@@ -64,16 +71,24 @@ function Dashboard(){
         fetchAccounts();
        },[])
 
-    
+    if(spinner){
+        return(
+            <>
+            <Box>
+                <Typography marginBottom={2} >Accounts</Typography>
+                <QuickFilteringGrid columns={accountColumns.current} rows={accounts.current}  ></QuickFilteringGrid>
+            </Box>
+            </>
+        );
+    }else{
+        return(
+            <>
+            <p>Error no account</p>
+            </>
+        );
+    }
 
-    return(
-        <>
-        <Box>
-            <Typography marginBottom={2} >Accounts</Typography>
-            <QuickFilteringGrid  data={tableData.current} fields={accountsKeys.current} ></QuickFilteringGrid>
-        </Box>
-        </>
-    );
+    
 
 }
 export default Dashboard;
