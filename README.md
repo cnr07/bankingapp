@@ -13,7 +13,7 @@ MYSQL_URL, MYSQL_USERNAME, MYSQL_PASSWORD.
 
 ![image](https://github.com/user-attachments/assets/e652f805-6b76-4c80-9bc0-459360d789a5)
 
-*Some screen shots from react app;
+*Some screenshots from react app;
 
 ![image](https://github.com/user-attachments/assets/f560946c-4226-49ea-843c-b47e36c43c0d)
 
