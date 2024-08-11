@@ -32,6 +32,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/transactions")
+@Tag(name = "Transaction", description = "All transaction ops handled here...")
 public class TransactionController {
 	
 	private TransactionService transactionService;

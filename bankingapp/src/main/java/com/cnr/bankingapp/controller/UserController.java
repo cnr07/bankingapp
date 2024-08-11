@@ -34,6 +34,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "User", description = "All user ops handled here...")
 public class UserController {
 	
 	private UserService userService;
