@@ -26,6 +26,12 @@ import com.cnr.bankingapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -42,16 +48,41 @@ public class UserController {
 	
 	
 	@PostMapping("/register")
+	@Operation(summary = "Returns tokens",
+    description = "Takes object that contains users username(username) users password(password) users email(email) users role(role) -> role can be"
+    		+ "ADMIN or USER. "
+    
+			)
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "If user successfully registered than, returns access_token refresh_token and message"
+            		+ "otherwise refresh_token and access_token would be null!"),
+    })
     public ResponseEntity<AuthResponseDto> register(@RequestBody User request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Returns tokens",
+    description = "Takes object that contains users username(username) users password(password) "
+    
+			)
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "If user successfully logged than, returns access_token refresh_token and message"),
+            @ApiResponse(responseCode = "401", description = "Error on login")
+	})
     public ResponseEntity<AuthResponseDto> login(@RequestBody User request) {
         return ResponseEntity.ok(authService.authenticate(request));
     }
 
     @PostMapping("/refresh_token")
+    @Operation(summary = "Returns tokens",
+    description = "Takes object that contains auth header authHeader(Bearer ***) "
+    
+			)
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "If user successfully logged than, returns access_token refresh_token and message"),
+            @ApiResponse(responseCode = "401", description = "Error on login")
+	})
     public ResponseEntity refreshToken(@RequestBody RefreshTokenRequestDto request) {
         return authService.refreshToken(request);
     }

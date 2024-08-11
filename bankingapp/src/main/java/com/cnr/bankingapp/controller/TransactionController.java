@@ -24,6 +24,12 @@ import com.cnr.bankingapp.entity.Transaction;
 import com.cnr.bankingapp.exception.BankingException;
 import com.cnr.bankingapp.service.TransactionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
@@ -38,11 +44,27 @@ public class TransactionController {
 	
 	
 	@PostMapping("/transfer")
+	@Operation(summary = "Returns transaction",
+    description = "Takes object that contains accounts id(from) accounts id(to) amount that will be added to the accounts(to) balance(balance)"
+    		+ "amount >=0"+"Header should countain Authorization header with Bearer prefix!"
+			)
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Returns transaction that can be success or fail"),
+            @ApiResponse(responseCode = "400", description = "Error on transaction")
+    })
     public ResponseEntity<Transaction> transferMoney(@RequestBody TransactionDto request,@RequestHeader(name = "Authorization", required = true) String jwt) {
 		return ResponseEntity.ok(transactionService.transferMoney(request,jwt));
     }
 	
 	@GetMapping("/account/{id}")
+	@Operation(summary = "Returns accounts transactions",
+    description = "Takes object that contains accounts id(id)"
+    +"Header should countain Authorization header with Bearer prefix!"
+			)
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Returns transactions that can be empty"),
+            @ApiResponse(responseCode = "400", description = "Error on transaction history")
+    })
     public ResponseEntity<List<Transaction>> transactionHistory(@PathVariable UUID id,@RequestHeader(name = "Authorization", required = true) String jwt) {
 		return ResponseEntity.ok(transactionService.transactionHistory(id,jwt));
     }

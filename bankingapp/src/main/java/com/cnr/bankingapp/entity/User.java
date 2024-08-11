@@ -27,6 +27,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.cnr.bankingapp.constant.RoleType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -36,27 +38,36 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(name = "User", description = "User entity")
 public class User implements UserDetails {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.UUID)
+	@Schema(name = "id", description = "User id", example = "123e4567-e89b-12d3-a456-426614174000")
     private UUID id;
 	
+	@Schema(name = "username", description = "User username", example = "cnr")
 	private String username;
 	
+	@Schema(name = "password", description = "User password", example = "password")
 	private String password;
 	
+	@Schema(name = "email", description = "User email", example = "can@gmail.com")
 	private String email;
 	
+	@Schema(name = "createdAt", description = "User created date", example = "2024-08-11 01:30:41.219106")
 	private LocalDateTime createdAt;
 	
+	@Schema(name = "updatedAt", description = "User updated date", example = "2024-08-11 01:30:41.219106")
 	private LocalDateTime updatedAt;
 	
 	@Enumerated(value = EnumType.STRING)
+	@Schema(name = "role", description = "User role", example = "USER")
     private RoleType role;
 	
 	@OneToMany(mappedBy = "user")
 	@JsonIgnore
+	@Schema(name = "tokens", description = "User tokens")
     private List<Token> tokens;
 	
 	@Override
